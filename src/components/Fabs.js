@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Fab, styled } from '@mui/material'
 import { Navigation } from '@mui/icons-material'
 import { observer } from 'mobx-react-lite'
@@ -7,7 +7,8 @@ import { useStore } from '../store/store'
 
 const Fabs = () => {
 
-  const { map, setCityName } = useStore()
+  const { setCityName } = useStore()
+  const [ isClicked, setIsClicked ] = useState(false)
 
   const cities = [
     { name: '台北', city: 'Taipei' },
@@ -29,18 +30,23 @@ const Fabs = () => {
   
   return (
     <RootBox>
-      { 
-        cities.map((item, i) => (
-          <Fab
-            key={i} 
-            variant='extended' 
-            size='small'
-            onClick={() => setCityName(item.city)}
-          >
-            <Navigation/>
-            { item.name }
-          </Fab>
-        ))
+      <MenuBox onClick={() => setIsClicked(!isClicked)}>DropDown</MenuBox>
+
+      { isClicked && <FabGroup>
+        { 
+          cities.map((item, i) => (
+            <Fab
+              key={i} 
+              variant='extended' 
+              size='small'
+              onClick={() => setCityName(item.city)}
+            >
+              <Navigation/>
+              { item.name }
+            </Fab>
+          ))
+        }
+      </FabGroup>
       }
     </RootBox>
   )
@@ -49,12 +55,32 @@ const Fabs = () => {
 export default observer(Fabs)
 
 const RootBox = styled('div')`
-  z-index: 2000;
-  width: 200px;
-  height: 350px;
+  z-index: 100;
   position: fixed;
   top: 5%;
   right: 3%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`
+
+const MenuBox = styled('div')((props) => `
+  width: 200px;
+  height: 35px;
+  border-radius: 25px;
+  background: rgba(220,220,220);
+  color: rgb(101,101,101);
+  margin-bottom: 20px;
+  text-align: center;
+  line-height: 35px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  font-weight: 700;
+`)
+
+const FabGroup = styled('div')((props) => `
+  width: 200px;
+  height: 350px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
@@ -63,4 +89,4 @@ const RootBox = styled('div')`
       margin-right: 10px;
       transform: rotate(30deg);
     }
-`
+`)

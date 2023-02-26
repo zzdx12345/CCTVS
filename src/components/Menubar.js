@@ -37,6 +37,7 @@ const RootBox = styled(AppBar)(({theme}) => `
   width: 40px;
   height: 100vh;
   align-items: center;
+  padding: 40px 0;
   justify-content: space-around;
   padding: 20px 0 20px 0;
   left: 0;

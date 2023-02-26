@@ -3,13 +3,14 @@ import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { useStore } from "../store/store";
 import { observer } from "mobx-react-lite";
 import { Close } from "@mui/icons-material";
+import MaskBox from './MaskBox';
 import useDrag from '../hooks/useDrag';
 
 
 const IframeCam = () => {
 
     const [ isLoading, setIsLoading ] = useState(true)
-    const { cameraURL, setVideoRef, setCameraURL } = useStore()
+    const { cityName, cameraURL, setVideoRef, setCameraURL } = useStore()
     const iframeRef = useRef(null)
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
@@ -18,10 +19,10 @@ const IframeCam = () => {
 
     useEffect(() => {
       iframeRef.current.src = cameraURL
+      console.log(cameraURL)
       setIsLoading(true)
       setVideoRef(iframeRef)
-    }, [cameraURL])
-    console.log(isLoading)
+    }, [cameraURL, setIsLoading, setVideoRef])
 
     return (
       <RootBox 
@@ -29,16 +30,14 @@ const IframeCam = () => {
         ismobile={Number(isMobile)}
       >
         <div style={{position: 'relative'}}>
-          { isLoading && <MaskBox>Loading...</MaskBox>}
+          { isLoading && cityName !== 'PingtungCounty' && <MaskBox ismobile={Number(isMobile)}/> }
           
           <iframe
+            title='iframeCam'
             ref={iframeRef}
             loading='lazy'
             allowFullScreen
-            onLoad={() => {
-              console.log(111)
-              setIsLoading(false)
-            }}
+            onLoad={() => setIsLoading(false)}
           />
 
           { !isMobile &&
@@ -71,18 +70,6 @@ const RootBox = styled('div')((props) => `
     }
 `)
 
-const MaskBox = styled('div')((props) =>`
-  width: ${props.ismobile? '300px' : '500px'};
-  height: ${props.ismobile? '250px' : '350px'};
-  z-index: 100;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: gray;
-  font-size: 30px;
-`)
-
 const CloseBtn = styled('div')((props) => `
   z-index: 100;
   width: 40px;
@@ -97,4 +84,5 @@ const CloseBtn = styled('div')((props) => `
   position: absolute;
   top: ${props.ismobile? '-7%' : '-7%'};
   right: ${props.ismobile? '-4%' : '-4%'};
+  cursor: pointer;
 `)

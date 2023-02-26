@@ -3,6 +3,7 @@ import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { useStore } from "../store/store";
 import { observer } from "mobx-react-lite";
 import { Close } from "@mui/icons-material";
+import MaskBox from "./MaskBox";
 import useDrag from '../hooks/useDrag'
 
 
@@ -23,7 +24,7 @@ const ImgCam = () => {
     imgRef.current.src = cameraURL
     setIsLoading(true)
     setVideoRef(imgRef)
-  }, [cameraURL])
+  }, [cameraURL, setVideoRef, setIsLoading])
 
   return (
     <RootBox id='RootBox'
@@ -31,7 +32,7 @@ const ImgCam = () => {
     >
       <div style={{position: 'relative'}}>
         
-        { isLoading && <MaskBox ismobile={Number(isMobile)}>Loading...</MaskBox>}
+        { isLoading && <MaskBox ismobile={Number(isMobile)}/>}
         
         <img 
           ref={imgRef}
@@ -68,18 +69,6 @@ const RootBox = styled('div')((props) => `
     }
 `)
 
-const MaskBox = styled('div')((props) =>`
-  width: ${props.ismobile? '300px' : '500px'};
-  height: ${props.ismobile? '250px' : '350px'};
-  z-index: 100;
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: gray;
-  font-size: 30px;
-`)
-
 const CloseBtn = styled('div')((props) => `
   z-index: 100;
   width: 40px;
@@ -94,4 +83,5 @@ const CloseBtn = styled('div')((props) => `
   position: absolute;
   top: ${props.ismobile? '-7%' : '-7%'};
   right: ${props.ismobile? '-4%' : '-4%'};
+  cursor: pointer;
 `)
