@@ -14,9 +14,9 @@ const MaskBox = (props) => {
 export default MaskBox
 
 
-const RootBox = styled('div')((props) =>`
-  width: ${props.ismobile? '300px' : '500px'};
-  height: ${props.ismobile? '250px' : '350px'};
+const RootBox = styled('div')(({ismobile}) =>`
+  width: ${ismobile? '300px' : '500px'};
+  height: ${ismobile? '250px' : '350px'};
   z-index: 100;
   position: absolute;
   display: flex;

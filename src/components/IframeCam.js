@@ -53,24 +53,24 @@ const IframeCam = () => {
 export default observer(IframeCam)
 
 
-const RootBox = styled('div')((props) => `
-  width: ${props.ismobile? '300px' : '500px'};
-  height: ${props.ismobile? '250px' : '350px'};
+const RootBox = styled('div')(({ismobile}) => `
+  width: ${ismobile? '300px' : '500px'};
+  height: ${ismobile? '250px' : '350px'};
   z-index: 90;
   position: absolute;
-  top: ${props.ismobile? '55%' : '3%'};
-  left: ${props.ismobile? '12%' : '5%'};
+  top: ${ismobile? '55%' : '3%'};
+  left: ${ismobile? '10%' : '5%'};
     iframe {
       display: flex;
       justify-content: center;
       align-items: center;
-      width: ${props.ismobile? '300px' : '500px'};
-      height: ${props.ismobile? '250px' : '350px'};
+      width: ${ismobile? '300px' : '500px'};
+      height: ${ismobile? '250px' : '350px'};
       pointer-events: none;
     }
 `)
 
-const CloseBtn = styled('div')((props) => `
+const CloseBtn = styled('div')(({ismobile}) => `
   z-index: 100;
   width: 40px;
   height: 40px;
@@ -82,7 +82,7 @@ const CloseBtn = styled('div')((props) => `
   align-items: center;
   color: rgba(255,255,255,0.8);
   position: absolute;
-  top: ${props.ismobile? '-7%' : '-7%'};
-  right: ${props.ismobile? '-4%' : '-4%'};
+  top: ${ismobile? '-7%' : '-7%'};
+  right: ${ismobile? '-4%' : '-4%'};
   cursor: pointer;
 `)

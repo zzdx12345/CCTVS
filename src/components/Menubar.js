@@ -1,16 +1,19 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
-import { AppBar, styled, IconButton } from "@mui/material";
+import { AppBar, styled, IconButton, useTheme, useMediaQuery } from "@mui/material";
 import { Search, DarkMode, VideoCameraBack, AccountCircle } from '@mui/icons-material'
 
 
 const Menubar = () => {
 
-  const {setCameraURL, setMode} = useStore()
+  const { setCameraURL, setMode} = useStore()
   const { mode, cameraURL } = useStore()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   return(
-    <RootBox>
+    <RootBox ismobile={Number(isMobile)}>
       <IconButton><Search/></IconButton>
       
       <IconButton 
@@ -33,14 +36,19 @@ const Menubar = () => {
   )
 }
 
-const RootBox = styled(AppBar)(({theme}) => `
-  width: 40px;
-  height: 100vh;
-  align-items: center;
-  padding: 40px 0;
+const RootBox = styled(AppBar)(({ismobile, theme}) => `
+  margin: auto;
+  width: ${ismobile? '90vw' : '40px'};
+  height: ${ismobile? '50px' : '100vh'};
+  padding: ${ismobile? '0 5px' : '40px 0'};
+  display: flex;
   justify-content: space-around;
-  padding: 20px 0 20px 0;
+  flex-direction: ${ismobile? 'row' : 'column'};
+  align-items: center;
+  position: absolute;
   left: 0;
+  top: ${ismobile? 'unset' : 0};
+  bottom: ${ismobile? '44px': 'unset'};
   background: ${theme.palette.menubar.main};
 `)
 

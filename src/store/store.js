@@ -14,10 +14,12 @@ class Store {
   selected = null
   map = null
   videoRef = null
+  menu = false
 
   setMap = act => this.map = act
   setToken = act => this.token = act
   setMode = act => this.mode = act
+  setMenu = act => this.menu = act
   setSelected = act => this.selected = act
   setVideoRef = act => this.videoRef = act
   setCameraURL  = act => {

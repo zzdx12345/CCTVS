@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Fab, styled } from '@mui/material'
+import React from 'react'
+import { Fab, styled, useTheme } from '@mui/material'
 import { Navigation } from '@mui/icons-material'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../store/store'
@@ -7,8 +7,8 @@ import { useStore } from '../store/store'
 
 const Fabs = () => {
 
-  const { setCityName } = useStore()
-  const [ isClicked, setIsClicked ] = useState(false)
+  const { menu, setCityName, setMenu } = useStore()
+  const theme = useTheme()
 
   const cities = [
     { name: '台北', city: 'Taipei' },
@@ -30,16 +30,20 @@ const Fabs = () => {
   
   return (
     <RootBox>
-      <MenuBox onClick={() => setIsClicked(!isClicked)}>DropDown</MenuBox>
+      <MenuBox onClick={() => setMenu(!menu)}>DropDown</MenuBox>
 
-      { isClicked && <FabGroup>
+      { menu && <FabGroup>
         { 
           cities.map((item, i) => (
             <Fab
               key={i} 
               variant='extended' 
               size='small'
-              onClick={() => setCityName(item.city)}
+              sx={{background: theme.palette.menubar.main, color: theme.palette.menubar.font}}
+              onClick={() => {
+                setCityName(item.city)
+                setMenu(false)
+              }}
             >
               <Navigation/>
               { item.name }
@@ -64,21 +68,22 @@ const RootBox = styled('div')`
   justify-content: center;
 `
 
-const MenuBox = styled('div')((props) => `
+const MenuBox = styled('div')(({theme}) => `
   width: 200px;
   height: 35px;
   border-radius: 25px;
   background: rgba(220,220,220);
-  color: rgb(101,101,101);
   margin-bottom: 20px;
   text-align: center;
   line-height: 35px;
   letter-spacing: 2px;
   cursor: pointer;
   font-weight: 700;
+  background: ${theme.palette.menubar.main};
+  color: ${theme.palette.menubar.font};
 `)
 
-const FabGroup = styled('div')((props) => `
+const FabGroup = styled('div')`
   width: 200px;
   height: 350px;
   display: flex;
@@ -89,4 +94,4 @@ const FabGroup = styled('div')((props) => `
       margin-right: 10px;
       transform: rotate(30deg);
     }
-`)
+`
