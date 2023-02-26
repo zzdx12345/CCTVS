@@ -6,6 +6,7 @@ const useDrag = (id) => {
   const isClicked = useRef(false);
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   useEffect(() => {
 
     const target = document.getElementById(id);

@@ -21,21 +21,24 @@ const ImgCam = () => {
 
   useEffect(() => {
     imgRef.current.src = cameraURL
+    setIsLoading(true)
     setVideoRef(imgRef)
   }, [cameraURL])
 
   return (
-    <RootBox id='RootBox' ismobile={Number(isMobile)}>
+    <RootBox id='RootBox'
+      ismobile={Number(isMobile)}
+    >
       <div style={{position: 'relative'}}>
         
         { isLoading && <MaskBox ismobile={Number(isMobile)}>Loading...</MaskBox>}
         
         <img 
-          onLoad={() => setIsLoading(false)}
           ref={imgRef}
           ismobile={Number(isMobile)}
           alt=''
           loading='lazy'
+          onLoad={() => setIsLoading(false)}
         />
         
         { !isMobile &&
@@ -53,20 +56,20 @@ export default observer(ImgCam)
 
 
 const RootBox = styled('div')((props) => `
-  width: ${props.ismobile? '330px' : '500px'};
+  width: ${props.ismobile? '300px' : '500px'};
   height: ${props.ismobile? '250px' : '350px'};
   z-index: 90;
   position: absolute;
-  top: ${props.ismobile? '65%' : '3%'};
+  top: ${props.ismobile? '55%' : '3%'};
   left: ${props.ismobile? '12%' : '5%'};
     img {
-      width: ${props.ismobile? '330px' : '500px'};
+      width: ${props.ismobile? '300px' : '500px'};
       height: ${props.ismobile? '250px' : '350px'};
     }
 `)
 
 const MaskBox = styled('div')((props) =>`
-  width: ${props.ismobile? '330px' : '500px'};
+  width: ${props.ismobile? '300px' : '500px'};
   height: ${props.ismobile? '250px' : '350px'};
   z-index: 100;
   position: absolute;

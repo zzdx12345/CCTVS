@@ -1,49 +1,100 @@
-import React from 'react'
-import { Fab, styled, useMediaQuery, useTheme } from "@mui/material";
+import React, { useState, useEffect, useRef } from 'react'
+import { styled, useMediaQuery, useTheme } from "@mui/material";
 import { useStore } from "../store/store";
 import { observer } from "mobx-react-lite";
 import { Close } from "@mui/icons-material";
+import useDrag from '../hooks/useDrag';
 
 
 const IframeCam = () => {
 
-    const { cameraURL, setCameraURL } = useStore()
+    const [ isLoading, setIsLoading ] = useState(true)
+    const { cameraURL, setVideoRef, setCameraURL } = useStore()
+    const iframeRef = useRef(null)
     const theme = useTheme()
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
+    useDrag('RootBox')
+
+    useEffect(() => {
+      iframeRef.current.src = cameraURL
+      setIsLoading(true)
+      setVideoRef(iframeRef)
+    }, [cameraURL])
+    console.log(isLoading)
 
     return (
-        <RootBox>
-            <div style={{position: 'relative'}}>
-                <iframe src={cameraURL} 
-                    style={{width: '500px', height: '300px'}}
-                    // allowFullScreen
-                    scrolling='no'
-                />
-                {/* <Fab size="small" onClick={() => setSelect(null)}>
-                  <Close/>
-                </Fab> */}
-            </div>
-        </RootBox>
+      <RootBox 
+        id='RootBox'
+        ismobile={Number(isMobile)}
+      >
+        <div style={{position: 'relative'}}>
+          { isLoading && <MaskBox>Loading...</MaskBox>}
+          
+          <iframe
+            ref={iframeRef}
+            loading='lazy'
+            allowFullScreen
+            onLoad={() => {
+              console.log(111)
+              setIsLoading(false)
+            }}
+          />
+
+          { !isMobile &&
+            <CloseBtn onClick={() => setCameraURL(null)} ismobile={Number(isMobile)}>
+              <Close/>
+            </CloseBtn>
+          }
+        </div>
+      </RootBox>
     )
 }
 
 export default observer(IframeCam)
 
-const RootBox = styled('div')`
+
+const RootBox = styled('div')((props) => `
+  width: ${props.ismobile? '300px' : '500px'};
+  height: ${props.ismobile? '250px' : '350px'};
   z-index: 90;
   position: absolute;
-  top: 3%;
-  left: 5%;
-  iframe {
-    width: 450px;
-    height: 350px;
-    background-size: cover;
-  }
-  button {
-    position: absolute;
-    top: -7%;
-    right: -4%;
-    background: rgba(220,220,220,0.6)
-  }
-`
+  top: ${props.ismobile? '55%' : '3%'};
+  left: ${props.ismobile? '12%' : '5%'};
+    iframe {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: ${props.ismobile? '300px' : '500px'};
+      height: ${props.ismobile? '250px' : '350px'};
+      pointer-events: none;
+    }
+`)
+
+const MaskBox = styled('div')((props) =>`
+  width: ${props.ismobile? '300px' : '500px'};
+  height: ${props.ismobile? '250px' : '350px'};
+  z-index: 100;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: gray;
+  font-size: 30px;
+`)
+
+const CloseBtn = styled('div')((props) => `
+  z-index: 100;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(200,200,200,0.6);
+  font-size: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(255,255,255,0.8);
+  position: absolute;
+  top: ${props.ismobile? '-7%' : '-7%'};
+  right: ${props.ismobile? '-4%' : '-4%'};
+`)

@@ -110,6 +110,9 @@ const getResponse = (item, cityName, setCameraURL) => {
     case 'YunlinCounty':
       setCameraURL(item.VideoStreamURL)
       break
+    case 'PingtungCounty':
+      setCameraURL(item.VideoStreamURL)
+      break
     default:
       setCameraURL(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
   }
