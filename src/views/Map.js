@@ -5,7 +5,6 @@ import { useStore } from "../store/store";
 import { dark } from "../theme/darkMap"
 import axios from "axios";
 import * as qs from 'qs'
-import VideoCam from "../components/VideoCam";
 
 
 
@@ -15,7 +14,7 @@ const Map = (props) => {
   const [center, setCenter] = useState(null)
   const [data, setData] = useState([])
   const { map, token, cityName, mode, selected } = useStore()
-  const { setCameraURL, setToken, setSelected, setMap } = useStore()
+  const { setCameraURL, setCameraDesc, setToken, setSelected, setMap } = useStore()
 
   // GoogleMap參數
   const options = useMemo(()=>({
@@ -38,9 +37,7 @@ const Map = (props) => {
     !token && axios({
       method: 'POST',
       url: 'https://tdx.transportdata.tw/auth/realms/TDXConnect/protocol/openid-connect/token',
-      headers: {
-        'content-type': 'application/x-www-form-urlencoded'
-      },
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
       data: qs.stringify({
         grant_type:"client_credentials",
         client_id: process.env.REACT_APP_TDX_KEY,
@@ -48,13 +45,20 @@ const Map = (props) => {
       }),
     }).then(res => setToken(res.data.access_token))
 
+    // edgeCase
+    if (cityName === 'YilanCounty') {
+      console.log(111)
+      axios('http://localhost:5000/city/YilanCountry').then(res => setResData(res, setData, map))
+    } 
+    
     // 取得response
-    token && cityName && axios({
-      url: `https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/City/${cityName}??%24top=1000&%24format=JSON`,
-      headers: {
-        "authorization": `Bearer ${token}`
-      }
-    }).then(res => setResData(res, setData, map))
+    else {
+      token && cityName && axios({
+        url: `https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/City/${cityName}??%24top=1000&%24format=JSON`,
+        headers: { "authorization": `Bearer ${token}` }
+      }).then(res => setResData(res, setData, map))
+    }
+
 
   },[token, setToken, cityName, map])
 
@@ -76,10 +80,7 @@ const Map = (props) => {
             require('../static/markers/ylw64 - location.png') :
             require('../static/markers/red32 - location.png') 
           }}
-          onClick={() => {
-            getResponse(item, cityName, setCameraURL)
-            setSelected(item.CCTVID)
-          }}
+          onClick={() => getResponse(item, cityName, setCameraURL, setCameraDesc, setSelected)}
         />
       )}
       {props.children}
@@ -88,32 +89,30 @@ const Map = (props) => {
 }
 
 
-const getResponse = (item, cityName, setCameraURL) => {
+const getResponse = (item, cityName, setCameraURL, setCameraDesc, setSelected) => {
   
   console.log(cityName)
   console.log(item.VideoStreamURL)
 
-  switch (cityName) {
-    case 'Taipei':
-      setCameraURL(item.VideoStreamURL)
-      break
-    case 'NewTaipei':
-      setCameraURL(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
-      break
-    case 'Taichung':
-      axios(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
-      .then(res => setCameraURL(res.data))
-      break    
-    case 'ChanghuaCounty':
-      setCameraURL(item.VideoStreamURL)
-      break
-    case 'YunlinCounty':
-      setCameraURL(item.VideoStreamURL)
-      break
-    default:
-      setCameraURL(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+  if (['Taipei', 'ChanghuaCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
+    setCameraURL(item.VideoStreamURL)
+    setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
   }
+  else if (cityName === 'Taichung') {
+    axios(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    .then(res => {
+      setCameraURL(res.data)
+      setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
+    })
+  }
+  else {
+    setCameraURL(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
+  }
+
+  setSelected(item.CCTVID)
 }
+
 
 
 const setResData = (res, setData, map) => {

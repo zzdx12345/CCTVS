@@ -15,7 +15,7 @@ export default MaskBox
 
 
 const RootBox = styled('div')(({ismobile}) =>`
-  width: ${ismobile? '300px' : '500px'};
+  width: ${ismobile? '350px' : '500px'};
   height: ${ismobile? '250px' : '350px'};
   z-index: 100;
   position: absolute;

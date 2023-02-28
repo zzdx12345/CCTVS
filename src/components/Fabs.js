@@ -30,7 +30,12 @@ const Fabs = () => {
   
   return (
     <RootBox>
-      <MenuBox onClick={() => setMenu(!menu)}>DropDown</MenuBox>
+      <MenuBox 
+        onClick={() => setMenu(!menu)}
+        menu={Number(menu)}
+      >
+        DropMenu
+      </MenuBox>
 
       { menu && <FabGroup>
         { 
@@ -68,7 +73,7 @@ const RootBox = styled('div')`
   justify-content: center;
 `
 
-const MenuBox = styled('div')(({theme}) => `
+const MenuBox = styled('div')(({menu, theme}) => `
   width: 200px;
   height: 35px;
   border-radius: 25px;
@@ -80,7 +85,7 @@ const MenuBox = styled('div')(({theme}) => `
   cursor: pointer;
   font-weight: 700;
   background: ${theme.palette.menubar.main};
-  color: ${theme.palette.menubar.font};
+  color: ${menu? 'rgb(30,155,255)' : theme.palette.menubar.font};
 `)
 
 const FabGroup = styled('div')`

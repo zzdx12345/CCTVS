@@ -8,6 +8,7 @@ class Store {
   }
 
   cameraURL = null
+  cameraDesc = null
   cityName = null
   mode = true
   token = null
@@ -22,19 +23,18 @@ class Store {
   setMenu = act => this.menu = act
   setSelected = act => this.selected = act
   setVideoRef = act => this.videoRef = act
+  setCameraDesc = act => this.cameraDesc = act
+
   setCameraURL  = act => {
     if (act === null) {
-      this.videoRef.current.src = null
+      this.videoRef && ( this.videoRef.current.src = null )
+      this.cameraURL = act
       console.log('connection down')
-      this.cameraURL = act
-    } else {
-      this.cameraURL = act
-    }
+    } 
+    this.cameraURL = act
   }
   setCityName = act => {
-    if (this.videoRef) {
-      this.videoRef.current.src = null
-    }
+    this.videoRef && ( this.videoRef.current.src = null )
     this.cityName = act
     this.cameraURL = null
     this.selected = null

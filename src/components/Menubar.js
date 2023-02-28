@@ -47,8 +47,9 @@ const RootBox = styled(AppBar)(({ismobile, theme}) => `
   align-items: center;
   position: absolute;
   left: 0;
+  right: ${ismobile? 0 : 'unset'};
   top: ${ismobile? 'unset' : 0};
-  bottom: ${ismobile? '44px': 'unset'};
+  bottom: ${ismobile? '12%': 'unset'};
   background: ${theme.palette.menubar.main};
 `)
 

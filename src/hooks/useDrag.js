@@ -18,9 +18,34 @@ const useDrag = (id) => {
     if (!container) throw new Error("target element must have a parent");
 
     const onMouseDown = (e) => {
-      isClicked.current = true;
-      e.preventDefault()
-      e.stopPropagation()
+      // 實現點擊位置在元素寬高的80%內, 才觸發
+      const width = target.clientWidth
+      const height = target.clientHeight
+      const { left, top } = e.target.getBoundingClientRect()
+      console.log(width, height)
+
+      // 手機模式下
+      if (isMobile) {
+        if (
+          e.changedTouches[0].clientX > (left + width * 0.2) && e.changedTouches[0].clientX < (left + width * 0.8) &&
+          e.changedTouches[0].clientY > (top + height * 0.2) && e.changedTouches[0].clientY < (top + height * 0.8)
+        ) {
+          isClicked.current = true;
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }
+      // 桌面模式下
+      else {
+        if (
+          e.clientX > (left + width * 0.2) && e.clientX < (left + width * 0.8) &&
+          e.clientY > (top + height * 0.2) && e.clientY < (top + height * 0.8)
+        ) {
+          isClicked.current = true;
+          e.preventDefault()
+          e.stopPropagation()
+        }
+      }
     }
 
     const onMouseUp = (e) => {
@@ -43,8 +68,8 @@ const useDrag = (id) => {
       e.stopPropagation()
       if (isClicked.current) {
         console.log('moving')
-        target.style.top = `${e.changedTouches[0].clientY - 100}px`;
-        target.style.left = `${e.changedTouches[0].clientX - 150}px`;
+        target.style.top = `${e.changedTouches[0].clientY - 150}px`;
+        target.style.left = `${e.changedTouches[0].clientX - 200}px`;
       }
     }
 
