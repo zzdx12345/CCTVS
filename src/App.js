@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createTheme, ThemeProvider } from "@mui/material";
+import { createTheme, ThemeProvider, useTheme, useMediaQuery } from "@mui/material";
 import { dark, light } from "./theme/theme.js";
 import { useLoadScript } from '@react-google-maps/api'
 import { observer } from "mobx-react-lite";
@@ -18,14 +18,16 @@ const App = () => {
   })
   
   const [ type, setType ] = useState(null)
-  const { cameraURL, mode, cityName } = useStore()
-  const theme = createTheme(mode? light : dark)
-  console.log(cameraURL)
-  console.log(cityName)
+  const { cameraURL, mode, cityName, setIsMobile } = useStore()
+
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const themeMode = createTheme(mode? light : dark)
 
   useEffect(() => {
-    new Vconsole()
-  }, [])
+    isMobile && new Vconsole()
+    setIsMobile(isMobile)
+  }, [isMobile, setIsMobile])
 
   useEffect(() => {
     if (['Taipei', 'PingtungCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
@@ -39,8 +41,11 @@ const App = () => {
     }
   }, [cityName])
 
+  console.log(cameraURL)
+  console.log(cityName)
+  
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={themeMode}>
       <div style={{position: 'relative'}}>
         { isLoaded && <Map/> }
         { cameraURL && <MediaCam type={type}/> }

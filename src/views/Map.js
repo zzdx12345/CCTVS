@@ -5,6 +5,7 @@ import { useStore } from "../store/store";
 import { dark } from "../theme/darkMap"
 import axios from "axios";
 import * as qs from 'qs'
+import Rainning from "../components/Rainning";
 
 
 
@@ -13,8 +14,9 @@ const Map = (props) => {
   // 定義變量
   const [center, setCenter] = useState(null)
   const [data, setData] = useState([])
-  const { map, token, cityName, mode, selected } = useStore()
-  const { setCameraURL, setCameraDesc, setToken, setSelected, setMap } = useStore()
+  const [rainningArr, setRainningArr] = useState([])
+  const { map, token, cityName, mode, selected, zoomed } = useStore()
+  const { setCameraURL, setCameraDesc, setToken, setSelected, setMap, setZoomed } = useStore()
 
   // GoogleMap參數
   const options = useMemo(()=>({
@@ -30,9 +32,29 @@ const Map = (props) => {
     })
   },[])
 
+  // 取得天氣資料
+  useEffect(() => {
+    axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather&parameterName=TOWN
+    `)
+    .then(res => {
+      console.log(res.data.records.location)
+      let arr = []
+      res.data.records.location.forEach(item => {
+        if (item.weatherElement[0].elementValue.includes('雨')) {
+          arr.push({
+            locationName: item.locationName,
+            lat: item.lat,
+            lon: item.lon,
+            weather: item.weatherElement[0].elementValue
+          })
+        }
+      })
+      setRainningArr(arr)
+    })
+  }, [])
+
   // useEffect取得token & 取得TDX縣市data
   useEffect(() => {
-
     // 取得token
     !token && axios({
       method: 'POST',
@@ -58,8 +80,6 @@ const Map = (props) => {
         headers: { "authorization": `Bearer ${token}` }
       }).then(res => setResData(res, setData, map))
     }
-
-
   },[token, setToken, cityName, map])
 
 
@@ -69,9 +89,10 @@ const Map = (props) => {
       center={center}
       zoom={12}
       options={options}
+      onZoomChanged={() => map && setZoomed(map.zoom)}
       onLoad={(map) => setMap(map)}
     >
-      {data?.map(item =>
+      { data?.map(item =>
         <Marker
           key={item.CCTVID}
           position={{lat: Number(item.PositionLat), lng: Number(item.PositionLon)}}
@@ -83,7 +104,12 @@ const Map = (props) => {
           onClick={() => getResponse(item, cityName, setCameraURL, setCameraDesc, setSelected)}
         />
       )}
-      {props.children}
+
+      { props.children }
+
+      { zoomed <= 13 && rainningArr?.map((item, i) => 
+        <Rainning key={i} item={item}/> 
+      )}
     </GoogleMap>
   )
 }

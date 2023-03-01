@@ -1,16 +1,14 @@
 import React from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
-import { AppBar, styled, IconButton, useTheme, useMediaQuery } from "@mui/material";
+import { AppBar, styled, IconButton } from "@mui/material";
 import { Search, DarkMode, VideoCameraBack, AccountCircle } from '@mui/icons-material'
 
 
 const Menubar = () => {
 
-  const { setCameraURL, setMode} = useStore()
+  const { setCameraURL, setMode, isMobile } = useStore()
   const { mode, cameraURL } = useStore()
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
   return(
     <RootBox ismobile={Number(isMobile)}>

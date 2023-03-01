@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { styled, useMediaQuery, useTheme, IconButton } from "@mui/material";
+import { styled, IconButton } from "@mui/material";
 import { useStore } from "../store/store";
 import { observer } from "mobx-react-lite";
 import { Circle, Close } from "@mui/icons-material";
@@ -13,10 +13,9 @@ const MediaCam = (props) => {
 
 
   const media = props.type
-  const { cameraURL, cameraDesc, setVideoRef, setCameraURL } = useStore()
+  const { cameraURL, cameraDesc, isMobile, setVideoRef, setCameraURL } = useStore()
   const [ isLoading, setIsLoading ] = useState(true)
-  const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
   let ref = useRef(null)
   console.log(isLoading)
 
@@ -70,10 +69,11 @@ const MediaCam = (props) => {
   return (
     <RootBox 
       id='RootBox' 
-      ismobile={Number(isMobile)} media={media}
+      media={media}
+      ismobile={Number(isMobile)} 
     >
       <TitleBox ismobile={Number(isMobile)} isloading={Number(isLoading)}>
-        <div className='topBar'>
+        <div className='top-bar'>
           <Circle/>
           <p>{ cameraDesc.t1 ? cameraDesc.t1 : cameraDesc.t2 ? cameraDesc.t2 : ' --- ' }</p>
         </div>
@@ -85,7 +85,7 @@ const MediaCam = (props) => {
 
       <div className="videoBox">
         
-        { isLoading && <MaskBox ismobile={Number(isMobile)}/>}
+        { isLoading && <MaskBox/>}
         
         { media === 'img' && 
           <img 
@@ -148,7 +148,7 @@ const TitleBox = styled('div')(({ismobile, isloading, theme}) => `
   align-items: center;
   color: ${theme.palette.menubar.font};
   padding: 0 0 0 10px;
-    .topBar {
+    .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;

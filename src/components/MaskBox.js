@@ -1,13 +1,13 @@
 import React from 'react'
 import { styled } from '@mui/material'
+import { useStore } from '../store/store'
 
+const MaskBox = () => {
 
-const MaskBox = (props) => {
-
-    const { ismobile } = props
+    const { isMobile } = useStore()
 
     return (
-        <RootBox ismobile={ismobile}>Loading...</RootBox>
+        <RootBox ismobile={Number(isMobile)}>Loading...</RootBox>
     )
 }
 

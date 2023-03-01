@@ -11,20 +11,25 @@ class Store {
   cameraDesc = null
   cityName = null
   mode = true
+  isMobile = false
   token = null
   selected = null
   map = null
   videoRef = null
   menu = false
+  zoomed = null
+  isMapDragging = false
 
   setMap = act => this.map = act
   setToken = act => this.token = act
   setMode = act => this.mode = act
+  setIsMobile = act => this.isMobile = act
   setMenu = act => this.menu = act
   setSelected = act => this.selected = act
   setVideoRef = act => this.videoRef = act
   setCameraDesc = act => this.cameraDesc = act
-
+  setZoomed = act => this.zoomed = act
+  setIsMapDragging = act => this.isMapDragging = act
   setCameraURL  = act => {
     if (act === null) {
       this.videoRef && ( this.videoRef.current.src = null )

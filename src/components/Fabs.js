@@ -1,6 +1,5 @@
 import React from 'react'
 import { Fab, styled, useTheme } from '@mui/material'
-import { Navigation } from '@mui/icons-material'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../store/store'
 
@@ -50,7 +49,6 @@ const Fabs = () => {
                 setMenu(false)
               }}
             >
-              <Navigation/>
               { item.name }
             </Fab>
           ))
