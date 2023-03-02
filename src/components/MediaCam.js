@@ -126,7 +126,7 @@ const RootBox = styled('div')(({ismobile, media}) => `
   z-index: 90;
   position: absolute;
   height: auto;
-  top: ${ismobile? '40%' : '3%'};
+  top: ${ismobile? '50%' : '3%'};
   left: ${ismobile? '3%' : '5%'};
     .videoBox {
       position: relative;

@@ -9,6 +9,7 @@ import Fabs from "./components/Fabs.js"
 import { useStore } from "./store/store.js";
 import MediaCam from "./components/MediaCam.js";
 import Vconsole from 'vconsole'
+import MobFabs from "./components/MobFabs.js";
 
 
 const App = () => {
@@ -50,7 +51,7 @@ const App = () => {
         { isLoaded && <Map/> }
         { cameraURL && <MediaCam type={type}/> }
         <Menubar/>
-        <Fabs/>
+        { isMobile ? <MobFabs/> : <Fabs/> }
       </div>
     </ThemeProvider>
   )

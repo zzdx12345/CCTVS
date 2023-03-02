@@ -37,7 +37,6 @@ const Map = (props) => {
     axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather&parameterName=TOWN
     `)
     .then(res => {
-      console.log(res.data.records.location)
       let arr = []
       res.data.records.location.forEach(item => {
         if (item.weatherElement[0].elementValue.includes('雨')) {
@@ -70,7 +69,7 @@ const Map = (props) => {
     // edgeCase
     if (cityName === 'YilanCounty') {
       console.log(111)
-      axios('http://localhost:5000/city/YilanCountry').then(res => setResData(res, setData, map))
+      axios(`${process.env.REACT_APP_VM_URL}/city/YilanCountry`).then(res => setResData(res, setData, map))
     } 
     
     // 取得response
@@ -87,7 +86,7 @@ const Map = (props) => {
     <GoogleMap 
       mapContainerStyle={{width: '100vw', height: '100vh'}}
       center={center}
-      zoom={12}
+      zoom={10}
       options={options}
       onZoomChanged={() => map && setZoomed(map.zoom)}
       onLoad={(map) => setMap(map)}
@@ -96,12 +95,18 @@ const Map = (props) => {
         <Marker
           key={item.CCTVID}
           position={{lat: Number(item.PositionLat), lng: Number(item.PositionLon)}}
-          icon={{
-            url: selected === item.CCTVID ? 
-            require('../static/markers/ylw64 - location.png') :
-            require('../static/markers/red32 - location.png') 
-          }}
           onClick={() => getResponse(item, cityName, setCameraURL, setCameraDesc, setSelected)}
+          icon={{
+            url: mode ? (
+            selected === item.CCTVID ?
+            require('../static/markers/ylw64.png') :
+            require('../static/markers/red32.png') 
+            ) : (
+            selected === item.CCTVID ?
+            require('../static/markers/red64.png') :
+            require('../static/markers/ylw32.png') 
+            )
+          }}
         />
       )}
 
@@ -125,21 +130,19 @@ const getResponse = (item, cityName, setCameraURL, setCameraDesc, setSelected) =
     setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
   }
   else if (cityName === 'Taichung') {
-    axios(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    axios(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
     .then(res => {
       setCameraURL(res.data)
       setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
     })
   }
   else {
-    setCameraURL(`http://localhost:5000/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    setCameraURL(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
     setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
   }
 
   setSelected(item.CCTVID)
 }
-
-
 
 const setResData = (res, setData, map) => {
   const view = new window.google.maps.LatLngBounds()
@@ -149,5 +152,6 @@ const setResData = (res, setData, map) => {
   map.fitBounds(view)
   setData(res.data.CCTVs)
 }
+
 
 export default observer(Map)
