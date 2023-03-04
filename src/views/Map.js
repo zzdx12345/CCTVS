@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, InfoWindow, Marker } from "@react-google-maps/api";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
 import { dark } from "../theme/darkMap"
@@ -12,11 +12,13 @@ import Rainning from "../components/Rainning";
 const Map = (props) => {
 
   // 定義變量
-  const [center, setCenter] = useState(null)
-  const [data, setData] = useState([])
-  const [rainningArr, setRainningArr] = useState([])
-  const { map, token, cityName, mode, selected, zoomed } = useStore()
-  const { setCameraURL, setCameraDesc, setToken, setSelected, setMap, setZoomed } = useStore()
+  const [ center, setCenter ] = useState(null)
+  const [ data, setData ] = useState([])
+  const [ rainningArr, setRainningArr ] = useState([])
+  const [ popupInfo, setPopupInfo ] = useState(null)
+  const { map, token, cityName, mode, selected, zoomed, searchData } = useStore()
+  const { setCameraURL, setCameraDesc, setToken } = useStore()
+  const { setSelected, setMap, setZoomed, setBounds } = useStore()
 
   // GoogleMap參數
   const options = useMemo(()=>({
@@ -28,7 +30,7 @@ const Map = (props) => {
   // useEffect取得用戶位置 & 設定地圖初始位置
   useEffect(()=>{
     navigator.geolocation.getCurrentPosition(({ coords })=>{
-      setCenter({lat: coords.latitude, lng: coords.longitude})
+      setCenter({ lat: coords.latitude, lng: coords.longitude })
     })
   },[])
 
@@ -84,12 +86,13 @@ const Map = (props) => {
 
   return (
     <GoogleMap 
-      mapContainerStyle={{width: '100vw', height: '100vh'}}
-      center={center}
       zoom={10}
+      mapContainerStyle={{ width: '100vw', height: '100vh' }}
+      center={center}
       options={options}
       onZoomChanged={() => map && setZoomed(map.zoom)}
       onLoad={(map) => setMap(map)}
+      onBoundsChanged={() => setBounds(map.getBounds())}
     >
       { data?.map(item =>
         <Marker
@@ -111,6 +114,27 @@ const Map = (props) => {
       )}
 
       { props.children }
+
+      { searchData?.map(item =>
+        <Marker
+          key={item.place_id}
+          position={{ lat: item.geometry.location.lat(), lng: item.geometry.location.lng() }}
+          onClick={() => {
+            console.log(item)
+            setPopupInfo(item)
+          }}
+        />  
+      )}
+
+      { popupInfo && 
+        <InfoWindow
+          style={{background: 'yellow'}}
+          position={{ lat: popupInfo.geometry.location.lat(), lng: popupInfo.geometry.location.lng() }}
+          onCloseClick={() => setPopupInfo(null)}
+        >
+          <div>{popupInfo.name}</div>
+        </InfoWindow>
+      }
 
       { zoomed <= 13 && rainningArr?.map((item, i) => 
         <Rainning key={i} item={item}/> 

@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
 import { AppBar, styled, IconButton } from "@mui/material";
 import { Search, DarkMode, VideoCameraBack, AccountCircle } from '@mui/icons-material'
+import AutoComplete from './AutoComplete'
 
 
 const Menubar = () => {
@@ -12,23 +13,35 @@ const Menubar = () => {
 
   return(
     <RootBox ismobile={Number(isMobile)}>
-      <IconButton><Search/></IconButton>
       
-      <IconButton 
-        onClick={() => setCameraURL(null)}
-        sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
-      >
-        <VideoCameraBack/>
-      </IconButton>
-      
-      <IconButton 
-        onClick={() => setMode(!mode)}
-        sx={{color: !mode? 'rgb(30,155,255)' : ''}}
-      >
-        <DarkMode/>
-      </IconButton>
+      { isMobile ?
+        <AutoComplete/>
+        :
+        <>
+        <IconButton
+          onClick={() => {}}
+        >
+          <Search/>
+        </IconButton>
 
-      <IconButton><AccountCircle/></IconButton>
+        <IconButton 
+          onClick={() => setCameraURL(null)}
+          sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
+        >
+          <VideoCameraBack/>
+        </IconButton>
+
+        <IconButton 
+          onClick={() => setMode(!mode)}
+          sx={{color: !mode? 'rgb(30,155,255)' : ''}}
+        >
+          <DarkMode/>
+        </IconButton>
+
+        <IconButton><AccountCircle/></IconButton>
+        </>
+      }
+      
     
     </RootBox>
   )

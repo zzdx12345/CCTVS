@@ -19,6 +19,8 @@ class Store {
   menu = false
   zoomed = null
   isMapDragging = false
+  bounds = null
+  searchData = null
 
   setMap = act => this.map = act
   setToken = act => this.token = act
@@ -30,6 +32,8 @@ class Store {
   setCameraDesc = act => this.cameraDesc = act
   setZoomed = act => this.zoomed = act
   setIsMapDragging = act => this.isMapDragging = act
+  setBounds = act => this.bounds = act
+  setSearchData = act => this.searchData = act
   setCameraURL  = act => {
     if (act === null) {
       this.videoRef && ( this.videoRef.current.src = null )

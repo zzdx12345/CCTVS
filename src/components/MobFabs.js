@@ -69,11 +69,13 @@ const FabGroup = styled('div')`
   display: flex;
   overflow-x: auto;
   gap: 10px;
+  padding: 2px 0;
     button {
         flex-shrink: 0;
         width: 60px;
         height: 30px;
         padding: 5px;
+        box-shadow: 0px 2px 2px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 2px 2px 0px rgb(0 0 0 / 12%);
     }
     &::-webkit-scrollbar{
       display: none;

@@ -12,10 +12,13 @@ import Vconsole from 'vconsole'
 import MobFabs from "./components/MobFabs.js";
 
 
+const libraries = ['places']
+
 const App = () => {
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_MAP_KEY
+    googleMapsApiKey: process.env.REACT_APP_MAP_KEY,
+    libraries: libraries
   })
   
   const [ type, setType ] = useState(null)
@@ -50,7 +53,7 @@ const App = () => {
       <div style={{position: 'relative'}}>
         { isLoaded && <Map/> }
         { cameraURL && <MediaCam type={type}/> }
-        <Menubar/>
+        { isLoaded && <Menubar/> }
         { isMobile ? <MobFabs/> : <Fabs/> }
       </div>
     </ThemeProvider>
