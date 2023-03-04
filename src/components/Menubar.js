@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
 import { AppBar, styled, IconButton } from "@mui/material";
@@ -9,36 +9,54 @@ import AutoComplete from './AutoComplete'
 const Menubar = () => {
 
   const { setCameraURL, setMode, isMobile } = useStore()
+  const [ isPopup, setIsPopup ] = useState(false)
   const { mode, cameraURL } = useStore()
 
   return(
-    <RootBox ismobile={Number(isMobile)}>
+    <RootBox 
+      ismobile={Number(isMobile)}
+      ispopup={Number(isPopup)}
+    >
       
       { isMobile ?
-        <AutoComplete/>
+        <>
+          <AutoComplete/>
+
+          <IconButton sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
+            onClick={() => setCameraURL(null)}
+          >
+            <VideoCameraBack/>
+          </IconButton>
+
+          <IconButton sx={{color: !mode? 'rgb(30,155,255)' : ''}}
+            onClick={() => setMode(!mode)}
+          >
+            <DarkMode/>
+          </IconButton>
+        </>
         :
         <>
-        <IconButton
-          onClick={() => {}}
-        >
-          <Search/>
-        </IconButton>
+          <IconButton sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
+            onClick={(e) => setIsPopup(!isPopup)}
+          >
+            <Search/>
+          </IconButton>
+          
+          { isPopup && <div className='popup-bar'><AutoComplete/></div> }
 
-        <IconButton 
-          onClick={() => setCameraURL(null)}
-          sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
-        >
-          <VideoCameraBack/>
-        </IconButton>
+          <IconButton sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
+            onClick={() => setCameraURL(null)}
+          >
+            <VideoCameraBack/>
+          </IconButton>
 
-        <IconButton 
-          onClick={() => setMode(!mode)}
-          sx={{color: !mode? 'rgb(30,155,255)' : ''}}
-        >
-          <DarkMode/>
-        </IconButton>
+          <IconButton sx={{color: !mode? 'rgb(30,155,255)' : ''}}
+            onClick={() => setMode(!mode)}
+          >
+            <DarkMode/>
+          </IconButton>
 
-        <IconButton><AccountCircle/></IconButton>
+          <IconButton><AccountCircle/></IconButton>
         </>
       }
       
@@ -47,7 +65,7 @@ const Menubar = () => {
   )
 }
 
-const RootBox = styled(AppBar)(({ismobile, theme}) => `
+const RootBox = styled(AppBar)(({ismobile, ispopup, theme}) => `
   margin: auto;
   width: ${ismobile? '90vw' : '40px'};
   height: ${ismobile? '50px' : '100vh'};
@@ -62,6 +80,11 @@ const RootBox = styled(AppBar)(({ismobile, theme}) => `
   top: ${ismobile? '5%' : 0};
   bottom: ${ismobile? 'unset': 'unset'};
   background: ${theme.palette.menubar.main};
+    .popup-bar {
+      position: absolute;
+      top: 15%;
+      left: 130%;
+    }
 `)
 
 export default observer(Menubar)

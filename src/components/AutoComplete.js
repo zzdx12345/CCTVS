@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { styled } from '@mui/material'
-import { Search } from '@mui/icons-material'
+import { Search, Close } from '@mui/icons-material'
 import { useStore } from "../store/store"
 import { observer } from "mobx-react-lite"
 import { LocationOn } from '@mui/icons-material'
@@ -57,7 +57,6 @@ const AutoComplete = () => {
           delete item.permanently_closed
         })
 
-        inputRef.current.value = ''
         setDataArr(null)
         setSearchData(results.filter(item => item.photos))
         map.fitBounds(viewport)
@@ -67,10 +66,19 @@ const AutoComplete = () => {
   return (
     <RootBox>
         <Search/>
+        { inputRef.current?.value && 
+            <Close onClick={() => {
+                setDataArr(null)
+                setSearchData(null)
+                inputRef.current.value = ''
+            }}/>
+        }
+
         <input 
             ref={inputRef}
             onChange={(e) => getPrediction(e.target.value)}
         />
+
         { dataArr &&
             <PredictionBox>
                 { dataArr.map((item, i) => 
@@ -90,7 +98,7 @@ const AutoComplete = () => {
 
 export default observer(AutoComplete)
 
-const RootBox = styled('div')`
+const RootBox = styled('div')(({theme}) => `
     width: 200px;
     position: relative;
     input {
@@ -100,6 +108,8 @@ const RootBox = styled('div')`
         padding: 5px 0 5px 30px;
         border: none;
         font-size: 20px;
+        background: ${theme.palette.inputbar.input};
+        color: ${theme.palette.inputbar.font};
     }
     svg {
         position: absolute;
@@ -108,15 +118,20 @@ const RootBox = styled('div')`
         color: gray;
         font-size: 20px;
     }
-`
+    svg:nth-of-type(2) {
+        left: unset;
+        right: 3%;
+    }
+`)
 
-const PredictionBox = styled('div')`
+const PredictionBox = styled('div')(({theme}) => `
     width: 200px;
     padding: 10px;
-    background: rgb(255,255,255);
+    background: ${theme.palette.inputbar.input};
+    color: ${theme.palette.inputbar.font};
     border-radius: 0 0 5px 5px;
     position: absolute;
-    top: 100%;
+    top: 99%;
     cursor: pointer;
         .text-box {
             width: 100%;
@@ -130,7 +145,7 @@ const PredictionBox = styled('div')`
             }
             .title {
                 font-size: 16px;
-                color: black;
+                color: ${theme.palette.inputbar.font};
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
@@ -150,4 +165,4 @@ const PredictionBox = styled('div')`
                 }
             }
         }
-`
+`)

@@ -71,7 +71,7 @@ const Map = (props) => {
     // edgeCase
     if (cityName === 'YilanCounty') {
       console.log(111)
-      axios(`${process.env.REACT_APP_VM_URL}/city/YilanCountry`).then(res => setResData(res, setData, map))
+      axios(`${process.env.REACT_APP_LOCAL_URL}/cities?cityName=YilanCountry`).then(res => setResData(res, setData, map))
     } 
     
     // 取得response
@@ -154,14 +154,14 @@ const getResponse = (item, cityName, setCameraURL, setCameraDesc, setSelected) =
     setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
   }
   else if (cityName === 'Taichung') {
-    axios(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    axios(`${process.env.REACT_APP_LOCAL_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
     .then(res => {
       setCameraURL(res.data)
       setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
     })
   }
   else {
-    setCameraURL(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+    setCameraURL(`${process.env.REACT_APP_LOCAL_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
     setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
   }
 
