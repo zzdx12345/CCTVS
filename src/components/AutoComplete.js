@@ -58,7 +58,7 @@ const AutoComplete = () => {
         })
 
         setDataArr(null)
-        setSearchData(results.filter(item => item.photos))
+        setSearchData(results)
         map.fitBounds(viewport)
     })
   }
@@ -77,12 +77,18 @@ const AutoComplete = () => {
         <input 
             ref={inputRef}
             onChange={(e) => getPrediction(e.target.value)}
+            onFocus={(e) => getPrediction(e.target.value)}
         />
 
         { dataArr &&
             <PredictionBox>
                 { dataArr.map((item, i) => 
-                    <div className='text-box' key={i} onClick={() => getResponse(item)}>
+                    <div className='text-box' key={i} 
+                        onClick={() => {
+                            getResponse(item)
+                            inputRef.current.value = item.structured_formatting.main_text
+                        }}
+                    >
                         { item.types ? <LocationOn/> : <Search/> }
                         <div>
                             <p className='title'>{item.structured_formatting.main_text}</p>

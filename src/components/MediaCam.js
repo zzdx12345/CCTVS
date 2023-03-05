@@ -9,10 +9,8 @@ import flvjs from 'flv.js'
 
 
 
-const MediaCam = (props) => {
+const MediaCam = ({ type }) => {
 
-
-  const media = props.type
   const { cameraURL, cameraDesc, isMobile, setVideoRef, setCameraURL } = useStore()
   const [ isLoading, setIsLoading ] = useState(true)
 
@@ -25,51 +23,43 @@ const MediaCam = (props) => {
     ref: ref,
     ismobile: Number(isMobile),
     loading: 'lazy',
-    media: media,
+    media: type,
   }
 
   useEffect(() => {
     if (ref.current) {
-      console.log(1)
       ref.current.src = cameraURL
       setIsLoading(true)
       setVideoRef(ref)
     }
-  }, [ref, media, cameraURL, setVideoRef, setIsLoading, isMobile])
+  }, [ref, type, cameraURL, setVideoRef, setIsLoading, isMobile])
 
   // 處理iframe
   useEffect(() => {
-    console.log(2)
-    if (media === 'iframe' && cameraURL && ref.current) {
+    if (type === 'iframe' && cameraURL && ref.current) {
       if (ref.current.contentDocument || ref.current.contentWindow) {
         setIsLoading(false)
-        console.log(3)
-        // const iframeDoc = ref.current.contentWindow.document
-        
-        // console.log(iframeDoc.getElementById('render-video'))
-        // videojs.style.width = '500px!important'
-        // videojs.style.height = '350px!important'
       }
     }
-  } ,[media, ref, cameraURL])
+  } ,[type, ref, cameraURL])
 
   // 處理.flv
   useEffect(() => {
     let flvPlayer
-    if (media === 'video') {
+    if (type === 'video') {
       flvPlayer = flvjs.createPlayer({ type: 'flv', url: cameraURL })
       flvPlayer.attachMediaElement(ref.current);
       flvPlayer.load();
     }
     return () => {
-      media === 'video' && flvPlayer.destroy()
+      type === 'video' && flvPlayer.destroy()
     }
-  }, [media, cameraURL, ref])
+  }, [type, cameraURL, ref])
 
   return (
     <RootBox 
       id='RootBox' 
-      media={media}
+      media={type}
       ismobile={Number(isMobile)} 
     >
       <TitleBox ismobile={Number(isMobile)} isloading={Number(isLoading)}>
@@ -85,9 +75,9 @@ const MediaCam = (props) => {
 
       <div className="videoBox">
         
-        { isLoading && <MaskBox/>}
+        { isLoading && type !== 'video' && <MaskBox/> }
         
-        { media === 'img' && 
+        { type === 'img' && 
           <img 
             alt=''
             onLoad={() => setIsLoading(false)} 
@@ -95,7 +85,7 @@ const MediaCam = (props) => {
           /> 
         }
 
-        { media === 'iframe' &&
+        { type === 'iframe' &&
             <iframe 
               title='iframeCam'
               style={{'pointerEvents': 'none'}}
@@ -104,7 +94,7 @@ const MediaCam = (props) => {
             /> 
         }
 
-        { media === 'video' && 
+        { type === 'video' && 
           <video 
             autoPlay
             controls
