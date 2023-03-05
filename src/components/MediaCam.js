@@ -6,17 +6,17 @@ import { Circle, Close } from "@mui/icons-material";
 import MaskBox from "./MaskBox";
 import useDrag from '../hooks/useDrag'
 import flvjs from 'flv.js'
-
+import axios from "axios";
 
 
 const MediaCam = ({ type }) => {
 
-  const { cameraURL, cameraDesc, isMobile, setVideoRef, setCameraURL } = useStore()
+  const { cameraURL, cameraDesc, isMobile, serverURL, setVideoRef, setCameraURL } = useStore()
   const [ isLoading, setIsLoading ] = useState(true)
 
   let ref = useRef(null)
   console.log(isLoading)
-
+  
   useDrag('RootBox')
 
   const options = {
@@ -68,7 +68,10 @@ const MediaCam = ({ type }) => {
           <p>{ cameraDesc.t1 ? cameraDesc.t1 : cameraDesc.t2 ? cameraDesc.t2 : ' --- ' }</p>
         </div>
 
-        <IconButton onClick={() => setCameraURL(null)} onTouchStart={() => setCameraURL(null)}>
+        <IconButton 
+          onClick={() => axios(`${serverURL}/close`).then(res => setCameraURL(res.data))}
+          onTouchStart={() => axios(`${serverURL}/close`).then(res => setCameraURL(res.data))}
+        >
           <Close sx={{fontSize: isMobile ? '1.2rem' : '1.5rem'}}/>
         </IconButton>
       </TitleBox>

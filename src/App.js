@@ -22,11 +22,15 @@ const App = () => {
   })
   
   const [ type, setType ] = useState(null)
-  const { cameraURL, mode, cityName, setIsMobile } = useStore()
+  const { cameraURL, mode, cityName, setIsMobile, setServerURL } = useStore()
 
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const themeMode = createTheme(mode? light : dark)
+
+  useEffect(() => {
+    setServerURL(process.env.REACT_APP_VM_URL)
+  }, [])
 
   useEffect(() => {
     isMobile && new Vconsole()

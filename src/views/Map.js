@@ -16,7 +16,7 @@ const Map = (props) => {
   const [ data, setData ] = useState([])
   const [ rainningArr, setRainningArr ] = useState([])
   const [ popupInfo, setPopupInfo ] = useState(null)
-  const { map, token, cityName, mode, selected, zoomed, searchData } = useStore()
+  const { map, token, cityName, mode, selected, zoomed, searchData, serverURL } = useStore()
   const { setCameraURL, setCameraDesc, setToken } = useStore()
   const { setSelected, setMap, setZoomed, setBounds } = useStore()
 
@@ -36,8 +36,7 @@ const Map = (props) => {
 
   // 取得天氣資料
   useEffect(() => {
-    axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather&parameterName=TOWN
-    `)
+    axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather&parameterName=TOWN`)
     .then(res => {
       let arr = []
       res.data.records.location.forEach(item => {
@@ -54,7 +53,7 @@ const Map = (props) => {
     })
   }, [])
 
-  // useEffect取得token & 取得TDX縣市data
+  // useEffect取得token & 取得TDX縣市CCTV
   useEffect(() => {
     // 取得token
     !token && axios({
@@ -71,7 +70,7 @@ const Map = (props) => {
     // edgeCase
     if (cityName === 'YilanCounty') {
       console.log(111)
-      axios(`${process.env.REACT_APP_VM_URL}/cities?cityName=YilanCountry`).then(res => setResData(res, setData, map))
+      axios(`${serverURL}/cities?cityName=YilanCountry`).then(res => setResData(res, setData, map))
     } 
     
     // 取得response
@@ -82,6 +81,39 @@ const Map = (props) => {
       }).then(res => setResData(res, setData, map))
     }
   },[token, setToken, cityName, map])
+
+  // 渲染CCTV座標 && 設置viewport
+  const setResData = (res, setData, map) => {
+    const view = new window.google.maps.LatLngBounds()
+    res.data.CCTVs.forEach(item => view.extend({lat: Number(item.PositionLat), lng: Number(item.PositionLon)}))
+    map.fitBounds(view)
+    setData(res.data.CCTVs)
+  }
+
+  // 取得CCTV函數
+  const getVideoSource = (item, cityName) => {
+
+    console.log(cityName)
+    console.log(item.VideoStreamURL)
+
+    if (['Taipei', 'ChanghuaCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
+      setCameraURL(item.VideoStreamURL)
+      setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
+    }
+    else if (cityName === 'Taichung') {
+      axios(`${serverURL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+      .then(res => {
+        setCameraURL(res.data)
+        setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
+      })
+    }
+    else {
+      setCameraURL(`${serverURL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+      setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
+    }
+
+    setSelected(item.CCTVID)
+  }
 
 
   return (
@@ -98,7 +130,7 @@ const Map = (props) => {
         <Marker
           key={item.CCTVID}
           position={{lat: Number(item.PositionLat), lng: Number(item.PositionLon)}}
-          onClick={() => getResponse(item, cityName, setCameraURL, setCameraDesc, setSelected)}
+          onClick={() => getVideoSource(item, cityName)}
           icon={{
             url: mode ? (
             selected === item.CCTVID ?
@@ -137,40 +169,6 @@ const Map = (props) => {
       )}
     </GoogleMap>
   )
-}
-
-
-const getResponse = (item, cityName, setCameraURL, setCameraDesc, setSelected) => {
-  
-  console.log(cityName)
-  console.log(item.VideoStreamURL)
-
-  if (['Taipei', 'ChanghuaCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
-    setCameraURL(item.VideoStreamURL)
-    setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
-  }
-  else if (cityName === 'Taichung') {
-    axios(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
-    .then(res => {
-      setCameraURL(res.data)
-      setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
-    })
-  }
-  else {
-    setCameraURL(`${process.env.REACT_APP_VM_URL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
-    setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
-  }
-
-  setSelected(item.CCTVID)
-}
-
-const setResData = (res, setData, map) => {
-  const view = new window.google.maps.LatLngBounds()
-  res.data.CCTVs.forEach(item => {
-    view.extend({lat: Number(item.PositionLat), lng: Number(item.PositionLon)})
-  });
-  map.fitBounds(view)
-  setData(res.data.CCTVs)
 }
 
 

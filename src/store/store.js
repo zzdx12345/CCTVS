@@ -21,6 +21,7 @@ class Store {
   isMapDragging = false
   bounds = null
   searchData = null
+  serverURL = null
 
   setMap = act => this.map = act
   setToken = act => this.token = act
@@ -34,6 +35,7 @@ class Store {
   setIsMapDragging = act => this.isMapDragging = act
   setBounds = act => this.bounds = act
   setSearchData = act => this.searchData = act
+  setServerURL = act => this.serverURL = act
   setCameraURL  = act => {
     if (act === null) {
       this.videoRef && ( this.videoRef.current.src = null )
