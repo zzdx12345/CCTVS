@@ -1,10 +1,13 @@
 {
   "files": {
-    "main.js": "/CCTVS/static/js/main.f9a99610.js",
+    "main.css": "/CCTVS/static/css/main.d49ca541.css",
+    "main.js": "/CCTVS/static/js/main.b5679101.js",
     "index.html": "/CCTVS/index.html",
-    "main.f9a99610.js.map": "/CCTVS/static/js/main.f9a99610.js.map"
+    "main.d49ca541.css.map": "/CCTVS/static/css/main.d49ca541.css.map",
+    "main.b5679101.js.map": "/CCTVS/static/js/main.b5679101.js.map"
   },
   "entrypoints": [
-    "static/js/main.f9a99610.js"
+    "static/css/main.d49ca541.css",
+    "static/js/main.b5679101.js"
   ]
 }
