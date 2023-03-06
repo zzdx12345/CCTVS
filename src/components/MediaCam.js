@@ -6,12 +6,15 @@ import { Circle, Close } from "@mui/icons-material";
 import MaskBox from "./MaskBox";
 import useDrag from '../hooks/useDrag'
 import flvjs from 'flv.js'
+import videojs from 'video.js'
+import "video.js/dist/video-js.css";
 import axios from "axios";
+
 
 
 const MediaCam = ({ type }) => {
 
-  const { cameraURL, cameraDesc, isMobile, serverURL, setVideoRef, setCameraURL } = useStore()
+  const { cityName, cameraURL, cameraDesc, isMobile, serverURL, setVideoRef, setCameraURL } = useStore()
   const [ isLoading, setIsLoading ] = useState(true)
 
   let ref = useRef(null)
@@ -46,15 +49,28 @@ const MediaCam = ({ type }) => {
   // 處理.flv
   useEffect(() => {
     let flvPlayer
-    if (type === 'video') {
+    let hlsPlayer
+    if (type === 'video' && cityName === 'NewTaipei') {
       flvPlayer = flvjs.createPlayer({ type: 'flv', url: cameraURL })
       flvPlayer.attachMediaElement(ref.current);
       flvPlayer.load();
     }
-    return () => {
-      type === 'video' && flvPlayer.destroy()
+    if (type === 'video' && cityName === 'YilanCounty') {
+      console.log(ref.current)
+      ref.current.className = "video-js"
+      hlsPlayer = videojs(ref.current, {
+        sources: [{
+          src: cameraURL,
+          type: "application/x-mpegURL"
+        }]
+      })
     }
-  }, [type, cameraURL, ref])
+
+    return () => {
+      type === 'video' && cityName === 'NewTaiper' && flvPlayer.destroy()
+      type === 'video' && cityName === 'YilanCounty' && hlsPlayer.dispose()
+    }
+  }, [type, cameraURL, ref, cityName])
 
   return (
     <RootBox 
@@ -127,8 +143,12 @@ const RootBox = styled('div')(({ismobile, media}) => `
       height: ${ismobile? '250px' : '350px'};
     }
     ${media} {
-      width: ${ismobile? '350px' : '500px'};
-      height: ${ismobile? '250px' : '350px'};
+      width: ${ismobile? '350px' : '500px'}!important;
+      height: ${ismobile? '250px' : '350px'}!important;
+    }
+    .video-js {
+      width: ${ismobile? '350px' : '500px'}!important;
+      height: ${ismobile? '250px' : '350px'}!important;
     }
 `)
 

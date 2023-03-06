@@ -29,8 +29,8 @@ const App = () => {
   const themeMode = createTheme(mode? light : dark)
 
   useEffect(() => {
-    setServerURL(process.env.REACT_APP_VM_URL)
-  }, [])
+    setServerURL(process.env.REACT_APP_LOCAL_URL)
+  }, [setServerURL])
 
   useEffect(() => {
     isMobile && new Vconsole()
@@ -38,10 +38,10 @@ const App = () => {
   }, [isMobile, setIsMobile])
 
   useEffect(() => {
-    if (['Taipei', 'PingtungCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
+    if (['Taipei', 'PingtungCounty', 'YunlinCounty'].includes(cityName)) {
       setType('iframe')
     }
-    else if (cityName === 'NewTaipei') {
+    else if (['NewTaipei', 'YilanCounty'].includes(cityName)) {
       setType('video')
     }
     else {

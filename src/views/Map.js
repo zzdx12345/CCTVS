@@ -80,7 +80,7 @@ const Map = (props) => {
         headers: { "authorization": `Bearer ${token}` }
       }).then(res => setResData(res, setData, map))
     }
-  },[token, setToken, cityName, map])
+  },[token, setToken, cityName, map, serverURL])
 
   // 渲染CCTV座標 && 設置viewport
   const setResData = (res, setData, map) => {
@@ -90,17 +90,17 @@ const Map = (props) => {
     setData(res.data.CCTVs)
   }
 
-  // 取得CCTV函數
+  // 取得CCTV資源
   const getVideoSource = (item, cityName) => {
 
     console.log(cityName)
     console.log(item.VideoStreamURL)
 
-    if (['Taipei', 'ChanghuaCounty', 'YunlinCounty', 'YilanCounty'].includes(cityName)) {
+    if (['Taipei', 'ChanghuaCounty', 'YunlinCounty'].includes(cityName)) {
       setCameraURL(item.VideoStreamURL)
       setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
     }
-    else if (cityName === 'Taichung') {
+    else if (['YilanCounty'].includes(cityName)) {
       axios(`${serverURL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
       .then(res => {
         setCameraURL(res.data)
