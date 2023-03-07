@@ -6,8 +6,7 @@ import { Circle, Close } from "@mui/icons-material";
 import MaskBox from "./MaskBox";
 import useDrag from '../hooks/useDrag'
 import flvjs from 'flv.js'
-import videojs from 'video.js'
-import "video.js/dist/video-js.css";
+import Hls from 'hls.js'
 import axios from "axios";
 
 
@@ -16,8 +15,8 @@ const MediaCam = ({ type }) => {
 
   const { cityName, cameraURL, cameraDesc, isMobile, serverURL, setVideoRef, setCameraURL } = useStore()
   const [ isLoading, setIsLoading ] = useState(true)
+  const ref = useRef(null)
 
-  let ref = useRef(null)
   console.log(isLoading)
   
   useDrag('RootBox')
@@ -46,29 +45,26 @@ const MediaCam = ({ type }) => {
     }
   } ,[type, ref, cameraURL])
 
-  // 處理.flv
+  // 處理.m3u8
   useEffect(() => {
     let flvPlayer
     let hlsPlayer
-    if (type === 'video' && cityName === 'NewTaipei') {
+
+    if (cityName === 'NewTaipei') {
       flvPlayer = flvjs.createPlayer({ type: 'flv', url: cameraURL })
       flvPlayer.attachMediaElement(ref.current);
       flvPlayer.load();
     }
-    if (type === 'video' && cityName === 'YilanCounty') {
-      console.log(ref.current)
-      ref.current.className = "video-js"
-      hlsPlayer = videojs(ref.current, {
-        sources: [{
-          src: cameraURL,
-          type: "application/x-mpegURL"
-        }]
-      })
+  
+    if (cityName === 'YilanCounty') {
+      hlsPlayer = new Hls()
+      hlsPlayer.loadSource(cameraURL)
+      hlsPlayer.attachMedia(ref.current)
     }
 
     return () => {
-      type === 'video' && cityName === 'NewTaiper' && flvPlayer.destroy()
-      type === 'video' && cityName === 'YilanCounty' && hlsPlayer.dispose()
+      cityName === 'NewTaiper' && flvPlayer.destroy()
+      cityName === 'YilanCounty' && hlsPlayer.destroy()
     }
   }, [type, cameraURL, ref, cityName])
 
@@ -92,9 +88,9 @@ const MediaCam = ({ type }) => {
         </IconButton>
       </TitleBox>
 
-      <div className="videoBox">
+      <div className="CCTV-Box">
         
-        { isLoading && type !== 'video' && <MaskBox/> }
+        { isLoading &&  <MaskBox/> }
         
         { type === 'img' && 
           <img 
@@ -137,18 +133,14 @@ const RootBox = styled('div')(({ismobile, media}) => `
   height: auto;
   top: ${ismobile? '50%' : '3%'};
   left: ${ismobile? '3%' : '5%'};
-    .videoBox {
+    .CCTV-Box {
       position: relative;
       width: ${ismobile? '350px' : '500px'};
       height: ${ismobile? '250px' : '350px'};
     }
     ${media} {
-      width: ${ismobile? '350px' : '500px'}!important;
-      height: ${ismobile? '250px' : '350px'}!important;
-    }
-    .video-js {
-      width: ${ismobile? '350px' : '500px'}!important;
-      height: ${ismobile? '250px' : '350px'}!important;
+      width: ${ismobile? '350px' : '500px'};
+      height: ${ismobile? '250px' : '350px'};
     }
 `)
 

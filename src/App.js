@@ -29,7 +29,7 @@ const App = () => {
   const themeMode = createTheme(mode? light : dark)
 
   useEffect(() => {
-    setServerURL(process.env.REACT_APP_LOCAL_URL)
+    setServerURL(process.env.REACT_APP_VM_URL)
   }, [setServerURL])
 
   useEffect(() => {

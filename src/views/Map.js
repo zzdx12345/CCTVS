@@ -101,9 +101,10 @@ const Map = (props) => {
       setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
     }
     else if (['YilanCounty'].includes(cityName)) {
-      axios(`${serverURL}/api?cityName=${cityName}&url=${item.VideoStreamURL}`)
+      const did = item.did
+      axios(`https://ilcpb.ivs.hinet.net/public/ajaxGetStream?did=${did}&page=ilcpb`)
       .then(res => {
-        setCameraURL(res.data)
+        setCameraURL(res.data.data[0].camurl)
         setCameraDesc({t1: item.RoadName, t2: item.SurveillanceDescription})
       })
     }
@@ -114,7 +115,6 @@ const Map = (props) => {
 
     setSelected(item.CCTVID)
   }
-
 
   return (
     <GoogleMap 
