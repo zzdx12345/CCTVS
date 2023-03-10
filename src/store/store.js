@@ -22,6 +22,7 @@ class Store {
   bounds = null
   searchData = null
   serverURL = null
+  isPopup = false
 
   setMap = act => this.map = act
   setToken = act => this.token = act
@@ -36,6 +37,7 @@ class Store {
   setBounds = act => this.bounds = act
   setSearchData = act => this.searchData = act
   setServerURL = act => this.serverURL = act
+  setIsPopup = act => this.isPopup = act
   setCameraURL  = act => {
     if (act === null) {
       this.videoRef && ( this.videoRef.current.src = null )

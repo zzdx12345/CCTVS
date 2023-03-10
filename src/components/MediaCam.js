@@ -68,6 +68,12 @@ const MediaCam = ({ type }) => {
     }
   }, [type, cameraURL, ref, cityName])
 
+  // 定義closeBTN函數
+  const closeBTN = () => {
+    setCameraURL(null)
+    axios(`${serverURL}/close`)
+  }
+
   return (
     <RootBox 
       id='RootBox' 
@@ -81,8 +87,8 @@ const MediaCam = ({ type }) => {
         </div>
 
         <IconButton 
-          onClick={() => axios(`${serverURL}/close`).then(res => setCameraURL(res.data))}
-          onTouchStart={() => axios(`${serverURL}/close`).then(res => setCameraURL(res.data))}
+          onClick={() => closeBTN()}
+          onTouchStart={() => closeBTN()}
         >
           <Close sx={{fontSize: isMobile ? '1.2rem' : '1.5rem'}}/>
         </IconButton>
@@ -113,6 +119,7 @@ const MediaCam = ({ type }) => {
           <video 
             autoPlay
             controls
+            playsInline
             onLoadedData={() => setIsLoading(false)}
             style={{background: 'black'}}
             {...options}

@@ -5,7 +5,7 @@ const useDrag = (id) => {
 
   const isClicked = useRef(false);
   const theme = useTheme()
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'))
 
   useEffect(() => {
 
@@ -68,8 +68,9 @@ const useDrag = (id) => {
       e.stopPropagation()
       if (isClicked.current) {
         console.log('moving')
+        console.log(e)
         target.style.top = `${e.changedTouches[0].clientY - 150}px`;
-        target.style.left = `${e.changedTouches[0].clientX - 200}px`;
+        target.style.left = `${e.changedTouches[0].clientX - 250}px`;
       }
     }
 

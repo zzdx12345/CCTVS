@@ -10,7 +10,7 @@ import { LocationOn } from '@mui/icons-material'
 const AutoComplete = () => {
 
   console.log('auto')
-  const { bounds, map, setSearchData } = useStore()
+  const { bounds, map, setSearchData, setIsPopup, isPopup } = useStore()
   const [ dataArr, setDataArr ] = useState(null)
   const [ sessionToken, setSessionToken ] = useState(null)
   const [ service, setService ] = useState(null)
@@ -59,6 +59,7 @@ const AutoComplete = () => {
 
         setDataArr(null)
         setSearchData(results)
+        setIsPopup(!isPopup)
         map.fitBounds(viewport)
     })
   }

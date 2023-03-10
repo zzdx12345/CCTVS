@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { observer } from "mobx-react-lite";
 import { useStore } from "../store/store";
 import { AppBar, styled, IconButton } from "@mui/material";
@@ -8,8 +8,7 @@ import AutoComplete from './AutoComplete'
 
 const Menubar = () => {
 
-  const { setCameraURL, setMode, isMobile } = useStore()
-  const [ isPopup, setIsPopup ] = useState(false)
+  const { setCameraURL, setMode, isMobile, isPopup, setIsPopup  } = useStore()
   const { mode, cameraURL } = useStore()
 
   return(
