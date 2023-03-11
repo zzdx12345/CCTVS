@@ -136,7 +136,7 @@ const Map = (props) => {
           icon={{ 
             url: selected === item.CCTVID ? 
             require('../static/markers/live64.png') :
-            require('../static/markers/live32.png') 
+            require('../static/markers/live48.png') 
           }}
         />
       )}
@@ -149,14 +149,19 @@ const Map = (props) => {
           position={{ lat: item.geometry.location.lat(), lng: item.geometry.location.lng() }}
         >
           <>
-            <div style={popupInfo && { fontSize: '14px' }} onClick={() => {setPopupInfo(item)}}>
+            <div
+              key={item.place_id} 
+              style={popupInfo === item.place_id && { fontSize: '14px' }} 
+              onClick={() => setPopupInfo(item.place_id)}
+            >
               {item.name}
             </div>
-            { popupInfo && 
+            { popupInfo === item.place_id && 
               <img 
                 src={item.photos[0].getUrl()} 
                 style={{width: '200px'}}
                 onClick={() => setPopupInfo(null)}
+                alt=''
               /> 
             }
           </>

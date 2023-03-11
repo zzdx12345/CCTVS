@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useMediaQuery, useTheme } from '@mui/material'
 
+
 const useDrag = (id) => {
 
   const isClicked = useRef(false);
@@ -9,7 +10,7 @@ const useDrag = (id) => {
 
   useEffect(() => {
 
-    const target = document.getElementById(id);
+    const target = document.getElementById(id)
     console.log(target)
 
     if (!target) throw new Error("Element with given id doesn't exist");
@@ -71,7 +72,6 @@ const useDrag = (id) => {
         console.log(e)
         target.style.top = `${e.changedTouches[0].clientY - target.offsetHeight / 2}px`;
         target.style.left = `${e.changedTouches[0].clientX - target.offsetWidth / 2}px`;
-        
       }
     }
 

@@ -44,12 +44,13 @@ const AutoComplete = () => {
     console.log(item)
     let request = { 
         query: item?.description || inputRef.current.value,
+        language: 'zh-TW',
         openNow: false,
     }
     placesService.textSearch(request, (results) => {
-        console.log(results)
+
         const viewport = new window.google.maps.LatLngBounds()
-        const city = cities.find((item) => results[0].formatted_address.includes(item.name)).city
+        const formattedCity = cities.find((item) => results[0].formatted_address.includes(item.name))
 
         results?.forEach( place => {
           if (place.geometry.viewport) {
@@ -61,7 +62,7 @@ const AutoComplete = () => {
           delete item.permanently_closed
         })
 
-        setCityName(city)
+        setCityName(formattedCity && formattedCity.city)
         setDataArr(null)
         setSearchData(results)
         setIsPopup(!isPopup)
@@ -111,10 +112,10 @@ const AutoComplete = () => {
 export default observer(AutoComplete)
 
 const RootBox = styled('div')(({theme}) => `
-    width: 250px;
+    width: 220px;
     position: relative;
     input {
-        width: 250px;
+        width: 220px;
         height: 30px;
         border-radius: 5px;
         padding: 5px 30px 5px 30px;

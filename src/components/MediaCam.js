@@ -19,7 +19,7 @@ const MediaCam = ({ type }) => {
 
   console.log(isLoading)
   
-  useDrag('RootBox')
+  useDrag('RootBox', true)
 
   const options = {
     ref: ref,
