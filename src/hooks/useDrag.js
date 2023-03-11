@@ -58,8 +58,8 @@ const useDrag = (id) => {
       e.preventDefault()
       if (isClicked.current) {
         console.log('moving')
-        target.style.top = `${e.clientY - 200}px`;
-        target.style.left = `${e.clientX - 250}px`;
+        target.style.top = `${e.clientY - target.offsetHeight / 2}px`;
+        target.style.left = `${e.clientX - target.offsetWidth / 2}px`;
       }
     }
 
@@ -69,8 +69,9 @@ const useDrag = (id) => {
       if (isClicked.current) {
         console.log('moving')
         console.log(e)
-        target.style.top = `${e.changedTouches[0].clientY - 150}px`;
-        target.style.left = `${e.changedTouches[0].clientX - 250}px`;
+        target.style.top = `${e.changedTouches[0].clientY - target.offsetHeight / 2}px`;
+        target.style.left = `${e.changedTouches[0].clientX - target.offsetWidth / 2}px`;
+        
       }
     }
 

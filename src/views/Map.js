@@ -80,13 +80,15 @@ const Map = (props) => {
         headers: { "authorization": `Bearer ${token}` }
       }).then(res => setResData(res, setData, map))
     }
-  },[token, setToken, cityName, map, serverURL])
+  },[token, cityName, map, serverURL, setToken])
 
   // 渲染CCTV座標 && 設置viewport
   const setResData = (res, setData, map) => {
-    const view = new window.google.maps.LatLngBounds()
-    res.data.CCTVs.forEach(item => view.extend({lat: Number(item.PositionLat), lng: Number(item.PositionLon)}))
-    map.fitBounds(view)
+    if (!searchData) {
+      const view = new window.google.maps.LatLngBounds()
+      res.data.CCTVs.forEach(item => view.extend({lat: Number(item.PositionLat), lng: Number(item.PositionLon)}))
+      map.fitBounds(view)
+    }
     setData(res.data.CCTVs)
   }
 
@@ -131,16 +133,10 @@ const Map = (props) => {
           key={item.CCTVID}
           position={{lat: Number(item.PositionLat), lng: Number(item.PositionLon)}}
           onClick={() => getVideoSource(item, cityName)}
-          icon={{
-            url: mode ? (
-            selected === item.CCTVID ?
-            require('../static/markers/ylw64.png') :
-            require('../static/markers/red32.png') 
-            ) : (
-            selected === item.CCTVID ?
-            require('../static/markers/red64.png') :
-            require('../static/markers/ylw32.png') 
-            )
+          icon={{ 
+            url: selected === item.CCTVID ? 
+            require('../static/markers/live64.png') :
+            require('../static/markers/live32.png') 
           }}
         />
       )}
@@ -148,21 +144,24 @@ const Map = (props) => {
       { props.children }
 
       { searchData?.map(item =>
-        <Marker
+        <InfoWindow
           key={item.place_id}
           position={{ lat: item.geometry.location.lat(), lng: item.geometry.location.lng() }}
-          onClick={() => setPopupInfo(item)}
-        />  
-      )}
-
-      { popupInfo && 
-        <InfoWindow
-          position={{ lat: popupInfo.geometry.location.lat(), lng: popupInfo.geometry.location.lng() }}
-          onCloseClick={() => setPopupInfo(null)}
         >
-          <div>{popupInfo.name}</div>
-        </InfoWindow>
-      }
+          <>
+            <div style={popupInfo && { fontSize: '14px' }} onClick={() => {setPopupInfo(item)}}>
+              {item.name}
+            </div>
+            { popupInfo && 
+              <img 
+                src={item.photos[0].getUrl()} 
+                style={{width: '200px'}}
+                onClick={() => setPopupInfo(null)}
+              /> 
+            }
+          </>
+        </InfoWindow>  
+      )}
 
       { zoomed <= 13 && rainningArr?.map((item, i) => 
         <Rainning key={i} item={item}/> 

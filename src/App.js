@@ -1,25 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { createTheme, ThemeProvider, useTheme, useMediaQuery } from "@mui/material";
-import { dark, light } from "./theme/theme.js";
+import React, { useEffect, useState } from "react"
+import { createTheme, ThemeProvider, useTheme, useMediaQuery } from "@mui/material"
+import { dark, light } from "./theme/theme.js"
 import { useLoadScript } from '@react-google-maps/api'
-import { observer } from "mobx-react-lite";
+import { observer } from "mobx-react-lite"
 import Map from './views/Map.js'
-import Menubar from "./components/Menubar.js";
+import Menubar from "./components/Menubar.js"
 import Fabs from "./components/Fabs.js"
-import { useStore } from "./store/store.js";
-import MediaCam from "./components/MediaCam.js";
+import { useStore } from "./store/store.js"
+import MediaCam from "./components/MediaCam.js"
 import Vconsole from 'vconsole'
-import MobFabs from "./components/MobFabs.js";
+import MobFabs from "./components/MobFabs.js"
 
 
 const libraries = ['places']
 
 const App = () => {
-
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_MAP_KEY,
-    libraries: libraries
-  })
   
   const [ type, setType ] = useState(null)
   const { cameraURL, mode, cityName, setIsMobile, setServerURL } = useStore()
@@ -27,6 +22,11 @@ const App = () => {
   const theme = useTheme()
   const isMobile = useMediaQuery(theme.breakpoints.down('md'))
   const themeMode = createTheme(mode? light : dark)
+
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_MAP_KEY,
+    libraries: libraries
+  })
 
   useEffect(() => {
     setServerURL(process.env.REACT_APP_VM_URL)

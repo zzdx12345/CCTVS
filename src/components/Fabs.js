@@ -6,26 +6,8 @@ import { useStore } from '../store/store'
 
 const Fabs = () => {
 
-  const { menu, setCityName, setMenu } = useStore()
+  const { cities, menu, setCityName, setMenu, setSearchData } = useStore()
   const theme = useTheme()
-
-  const cities = [
-    { name: '台北', city: 'Taipei' },
-    { name: '新北', city: 'NewTaipei' },
-    { name: '基隆', city: 'Keelung' },
-    { name: '桃園', city: 'Taoyuan' },
-    { name: '竹北', city: 'HsinchuCounty' },
-    { name: '新竹', city: 'Hsinchu' },
-    { name: '台中', city: 'Taichung' },
-    { name: '彰化', city: 'ChanghuaCounty' },
-    { name: '雲林', city: 'YunlinCounty' },
-    { name: '嘉義', city: 'Chiayi' },
-    { name: '宜蘭', city: 'YilanCounty' },
-    { name: '台南', city: 'Tainan' },
-    { name: '高雄', city: 'Kaohsiung' },
-    { name: '台東', city: 'TaitungCounty' },
-    { name: '屏東', city: 'PingtungCounty' },
-  ]
   
   return (
     <RootBox>
@@ -46,6 +28,7 @@ const Fabs = () => {
               sx={{background: theme.palette.menubar.main, color: theme.palette.menubar.font}}
               onClick={() => {
                 setCityName(item.city)
+                setSearchData(null)
                 setMenu(false)
               }}
             >

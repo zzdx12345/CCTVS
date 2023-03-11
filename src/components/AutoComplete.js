@@ -10,7 +10,7 @@ import { LocationOn } from '@mui/icons-material'
 const AutoComplete = () => {
 
   console.log('auto')
-  const { bounds, map, setSearchData, setIsPopup, isPopup } = useStore()
+  const { cities, bounds, map, isPopup, setSearchData, setIsPopup, setCityName } = useStore()
   const [ dataArr, setDataArr ] = useState(null)
   const [ sessionToken, setSessionToken ] = useState(null)
   const [ service, setService ] = useState(null)
@@ -18,7 +18,8 @@ const AutoComplete = () => {
   const inputRef = useRef(null)
 
   useEffect(() => {
-    map && setPlacesService(new window.google.maps.places.PlacesService(map))
+    if (!map) return
+    setPlacesService(new window.google.maps.places.PlacesService(map))
     setSessionToken(new window.google.maps.places.AutocompleteSessionToken())
     setService(new window.google.maps.places.AutocompleteService())
   }, [map])
@@ -40,13 +41,16 @@ const AutoComplete = () => {
   }
   
   const getResponse = (item) => {
+    console.log(item)
     let request = { 
-      query: item?.description || inputRef.current.value, 
-      openNow: false
+        query: item?.description || inputRef.current.value,
+        openNow: false,
     }
     placesService.textSearch(request, (results) => {
         console.log(results)
         const viewport = new window.google.maps.LatLngBounds()
+        const city = cities.find((item) => results[0].formatted_address.includes(item.name)).city
+
         results?.forEach( place => {
           if (place.geometry.viewport) {
             viewport.union(place.geometry.viewport)
@@ -57,6 +61,7 @@ const AutoComplete = () => {
           delete item.permanently_closed
         })
 
+        setCityName(city)
         setDataArr(null)
         setSearchData(results)
         setIsPopup(!isPopup)
@@ -106,13 +111,13 @@ const AutoComplete = () => {
 export default observer(AutoComplete)
 
 const RootBox = styled('div')(({theme}) => `
-    width: 200px;
+    width: 250px;
     position: relative;
     input {
-        width: 200px;
+        width: 250px;
         height: 30px;
         border-radius: 5px;
-        padding: 5px 0 5px 30px;
+        padding: 5px 30px 5px 30px;
         border: none;
         font-size: 20px;
         background: ${theme.palette.inputbar.input};
