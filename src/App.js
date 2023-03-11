@@ -24,12 +24,12 @@ const App = () => {
   const themeMode = createTheme(mode? light : dark)
 
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: process.env.REACT_APP_MAP_KEY,
+    googleMapsApiKey: process.env.REACT_APP_VM_KEY,
     libraries: libraries
   })
 
   useEffect(() => {
-    setServerURL(process.env.REACT_APP_VM_URL)
+    setServerURL(process.env.REACT_APP_LOCAL_URL)
   }, [setServerURL])
 
   useEffect(() => {
@@ -41,7 +41,7 @@ const App = () => {
     if (['Taipei', 'PingtungCounty', 'YunlinCounty'].includes(cityName)) {
       setType('iframe')
     }
-    else if (['NewTaipei', 'YilanCounty'].includes(cityName)) {
+    else if (['YilanCounty'].includes(cityName)) {
       setType('video')
     }
     else {

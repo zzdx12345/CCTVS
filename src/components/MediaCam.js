@@ -5,7 +5,6 @@ import { observer } from "mobx-react-lite";
 import { Circle, Close } from "@mui/icons-material";
 import MaskBox from "./MaskBox";
 import useDrag from '../hooks/useDrag'
-import flvjs from 'flv.js'
 import Hls from 'hls.js'
 import axios from "axios";
 
@@ -47,23 +46,13 @@ const MediaCam = ({ type }) => {
 
   // 處理.m3u8
   useEffect(() => {
-    let flvPlayer
     let hlsPlayer
-
-    if (cityName === 'NewTaipei') {
-      flvPlayer = flvjs.createPlayer({ type: 'flv', url: cameraURL })
-      flvPlayer.attachMediaElement(ref.current);
-      flvPlayer.load();
-    }
-  
     if (cityName === 'YilanCounty') {
       hlsPlayer = new Hls()
       hlsPlayer.loadSource(cameraURL)
       hlsPlayer.attachMedia(ref.current)
     }
-
     return () => {
-      cityName === 'NewTaiper' && flvPlayer.destroy()
       cityName === 'YilanCounty' && hlsPlayer.destroy()
     }
   }, [type, cameraURL, ref, cityName])

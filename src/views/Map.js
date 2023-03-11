@@ -136,7 +136,7 @@ const Map = (props) => {
           icon={{ 
             url: selected === item.CCTVID ? 
             require('../static/markers/live64.png') :
-            require('../static/markers/live48.png') 
+            require('../static/markers/live32.png') 
           }}
         />
       )}
@@ -151,7 +151,6 @@ const Map = (props) => {
           <>
             <div
               key={item.place_id} 
-              style={popupInfo === item.place_id && { fontSize: '14px' }} 
               onClick={() => setPopupInfo(item.place_id)}
             >
               {item.name}
