@@ -36,9 +36,10 @@ const Map = (props) => {
 
   // 取得天氣資料
   useEffect(() => {
-    axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather&parameterName=TOWN`)
+    axios(`https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0001-001?Authorization=${process.env.REACT_APP_WEATHER_KEY}&elementName=Weather`)
     .then(res => {
       let arr = []
+      console.log(res.data)
       res.data.records.location.forEach(item => {
         if (item.weatherElement[0].elementValue.includes('雨')) {
           arr.push({
@@ -76,7 +77,7 @@ const Map = (props) => {
     // 取得response
     else {
       token && cityName && axios({
-        url: `https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/City/${cityName}??%24top=1000&%24format=JSON`,
+        url: `https://tdx.transportdata.tw/api/basic/v2/Road/Traffic/CCTV/City/${cityName}?%24top=1000&%24format=JSON`,
         headers: { "authorization": `Bearer ${token}` }
       }).then(res => setResData(res, setData, map))
     }

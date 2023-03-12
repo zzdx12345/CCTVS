@@ -21,7 +21,7 @@ const Menubar = () => {
         <>
           <AutoComplete/>
 
-          <IconButton sx={{color: cameraURL? 'rgb(30,155,255)' : ''}}
+          <IconButton sx={{color: isPopup? 'rgb(30,155,255)' : ''}}
             onClick={() => setCameraURL(null)}
           >
             <VideoCameraBack/>
